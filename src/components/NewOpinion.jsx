@@ -1,7 +1,10 @@
+import { use } from "react";
 import { useActionState } from "react";
+import { OpinionsContext } from "../store/opinions-context";
 
 export function NewOpinion() {
-  const shareOptionAction=(prevState,formData)=>{
+  const {addOpinion}=use(OpinionsContext);
+  async function shareOptionAction(prevState,formData){
       const title=formData.get("title");
       const body = formData.get("body");
       const userName=formData.get("userName");
@@ -27,9 +30,26 @@ export function NewOpinion() {
         };
       }
       //submit to backed:-
+      await addOpinion({title,body,userName});
+      return {
+        errors: null,
+        enteredValues: {
+        title: "",
+        body: "",
+        userName: ""
+    }
+  };
       
   }
-  const [formState,formAction]=useActionState(shareOptionAction,{errors:null});
+ const [formState, formAction] = useActionState(shareOptionAction, { 
+  errors: null,
+  enteredValues: {
+    title: "",
+    body: "",
+    userName: ""
+  }
+});
+
   return (
     <div id="new-opinion">
       <h2>Share your opinion!</h2>
